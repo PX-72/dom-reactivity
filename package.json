@@ -1,7 +1,7 @@
 {
-  "name": "basic-ts",
+  "name": "dom-reactive",
   "version": "1.0.0",
-  "description": "A basic example of DOM manipulation using TypeScript.",
+  "description": "Reactivity in the DOM.",
   "main": "src/index.js",
   "scripts": {
     "build": "tsc --watch"

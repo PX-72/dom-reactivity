@@ -1,6 +1,7 @@
 export type HtmlElementBuilderOptions = {
   text?: string;
-  style?: object;
+  style?: string;
+  className?: string;
   visible?: boolean;
   attributes?: object;
   eventType?: string;
@@ -8,18 +9,20 @@ export type HtmlElementBuilderOptions = {
 };
 
 export const build = (type: string, options: HtmlElementBuilderOptions = {}): HTMLElement => {
-  const { text, style = {}, visible = true, attributes = {}, eventType, eventCallback } = options;
+  const { text, style = '', className = '', visible = true, attributes = {}, eventType, eventCallback } = options;
 
   const element = document.createElement(type);
   if (text) element.innerText = text;
 
-  for (const [key, value] of Object.entries(style)) {
-    element.style.setProperty(key, value);
+  if (!visible) {
+    element.style.display = 'none';
+    return element;
   }
 
-  if (!visible) element.style.display = 'none';
+  if (style) {
+    element.setAttribute('style', style.replace(/\n/g, '').trim());
+  } 
 
-  //CSSStyleDeclaration
   for (const [key, value] of Object.entries(attributes)) {
     element.setAttribute(key, value);
   }
@@ -31,9 +34,15 @@ export const build = (type: string, options: HtmlElementBuilderOptions = {}): HT
   return element;
 };
 
-export const append = (parent: HTMLElement, ...children: HTMLElement[]): HTMLElement => {
+export const html = (parent: HTMLElement, ...children: Array<HTMLElement | DocumentFragment>): HTMLElement => {
   for (const childElement of children) parent.appendChild(childElement);
   return parent;
+};
+
+export const fragment = (...elements: HTMLElement[]): DocumentFragment => {
+  const htmlFragment = document.createDocumentFragment();
+  for (const childElement of elements) htmlFragment.appendChild(childElement);
+  return htmlFragment;
 };
 
 export const toggleVisibility = (elements: HTMLElement[] = [], visibleStyle = 'block'): void => {
@@ -41,3 +50,12 @@ export const toggleVisibility = (elements: HTMLElement[] = [], visibleStyle = 'b
     element.style.display = element.style.display === 'none' ? visibleStyle : 'none';
   });
 };
+
+export const button = (text: string, onclick: () => void, style: string = '', className = ''): HTMLElement =>
+  build('button', {
+    text: text,
+    style: style,
+    className: className,
+    eventType: 'click',
+    eventCallback: () => onclick(),
+  });

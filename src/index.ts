@@ -1,6 +1,9 @@
-import { build, append } from './utils/dom-helper.js';
+import Component from './Component.js';
+import { build, html, p, button } from './utils/dom-helper.js';
 
-const app = append(
+const app = html(
   document.querySelector<HTMLElement>('#app')!, 
-  build('p', { text: 'hello...' })
+  Component(),
+  Component(),
+  Component(),
 );
